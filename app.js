@@ -1,7 +1,15 @@
 const express = require('express');
 const ExpressError = require('./expressError')
 
+// FOR ADDING ROUTES (1/2)
+const dogRoutes = require('./dogRoutes')
+
 const app = express();
+
+app.use(express.json());
+
+// FOR ADDING ROUTES (2/2)
+app.use('/dogs', dogRoutes);
 
 
 function attemptToSaveToDB() {
@@ -70,3 +78,4 @@ app.listen(3000, () => {
 
 // **Anytime you call next and pass a value in, express will look for the next error handler
 // Anytime you call next but don't pass a value in, just looks for next match
+
