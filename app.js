@@ -1,16 +1,16 @@
 const express = require('express');
 const ExpressError = require('./expressError')
-
-// FOR ADDING ROUTES (1/2)
+const middleware = require('./middleware')
 const dogRoutes = require('./dogRoutes')
 
 const app = express();
 
 app.use(express.json());
 
-// FOR ADDING ROUTES (2/2)
 app.use('/dogs', dogRoutes);
 
+app.use(middleware.logger)
+app.get('/favicon.ico', (req, res) => res.sendStatus(204))
 
 function attemptToSaveToDB() {
   throw "Connection Error!"
@@ -56,9 +56,8 @@ app.get('/savetodb', (req, res, next) => {
 
 // 404 page
 // runs if no match before
-app.use((req, res, next) => {
-  const err = new ExpressError("Page Not Found :(", 404)
-  next(err)
+app.use(function (req, res) {
+  return new ExpressError("Not Found", 404)
 })
 
 // **Error Handler, 4 params
