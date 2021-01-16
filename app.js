@@ -6,20 +6,19 @@ const dogRoutes = require('./dogRoutes')
 const app = express();
 
 app.use(express.json());
+app.use(middleware.logger)
+
 
 app.use('/dogs', dogRoutes);
-
-app.use(middleware.logger)
 app.get('/favicon.ico', (req, res) => res.sendStatus(204))
 
-function attemptToSaveToDB() {
-  throw "Connection Error!"
-}
+app.get('/secret', middleware.checkPassword, (req, res, next) => {
+  return res.send("You've logged in!")
+})
 
-const USERS = [
-  { username: "stacysmom", city: "Reno" },
-  { username: "rosalia", city: "R" },
-]
+app.get('/secret/2', middleware.checkPassword, (req, res, next) => {
+  return res.send("You've made it again!")
+})
 
 app.get("/users/:username", function (req, res, next) {
   try {
@@ -57,8 +56,8 @@ app.get('/savetodb', (req, res, next) => {
 // 404 page
 // runs if no match before
 app.use(function (req, res) {
-  return new ExpressError("Not Found", 404)
-})
+  return new ExpressError("Not Found", 404);
+});
 
 // **Error Handler, 4 params
 // after next is called for error
@@ -78,3 +77,12 @@ app.listen(3000, () => {
 // **Anytime you call next and pass a value in, express will look for the next error handler
 // Anytime you call next but don't pass a value in, just looks for next match
 
+
+function attemptToSaveToDB() {
+  throw "Connection Error!"
+}
+
+const USERS = [
+  { username: "stacysmom", city: "Reno" },
+  { username: "rosalia", city: "R" },
+]
