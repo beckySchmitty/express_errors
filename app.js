@@ -1,12 +1,15 @@
 const express = require('express');
 const ExpressError = require('./expressError')
 const middleware = require('./middleware')
+const morgan = require("morgan")
+
 const dogRoutes = require('./dogRoutes')
 
 const app = express();
 
 app.use(express.json());
-app.use(middleware.logger)
+// app.use(middleware.logger)
+app.use(morgan('dev'))
 
 
 app.use('/dogs', dogRoutes);
